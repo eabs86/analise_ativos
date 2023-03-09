@@ -9,29 +9,12 @@ import pandas as pd #carregando a biblioteca
 import numpy as np
 from datetime import datetime
 
+from funcoes_auxiliares import object_to_float, normalizar_serie, retorno_e_stats, grafico_retornos_diarios
+
 import matplotlib.pyplot as plt
 
 
-def object_to_float(dataframe_object):
-    coluna_datas = dataframe_object['date'].copy()
-    dataframe_object.drop('date',axis="columns",inplace=True)
-    dataframe_object = dataframe_object.stack().str.replace('.','').unstack()
-    dataframe_object = dataframe_object.stack().str.replace(',','.').unstack()
-    dataframe_float = dataframe_object.astype(float)
-    dataframe_float['date']=coluna_datas
-    dataframe_float.set_index('date',inplace=True)
-    
-    return dataframe_float
 
-def normalizar_serie(serie):
-    serie_normalizada = ((serie/serie.iloc[0])-1)*100
-    
-    return serie_normalizada
-
-# def retorno_e_stats(dataframe):
-    
-    
-#     return new_dataframe
 
 """ 
 1º Etapa: Carregamento dos dados e alteração do nome das colunas.
@@ -184,3 +167,10 @@ ax2 = assets_close_norm[['nasdaq','ibovespa','dxy','usdbrl','ouro']].plot()
 ax2.set_ylabel('Retorno Percentual %')
 ax2.set_xlabel('Tempo')
 
+btcusd_new_dataframe = retorno_e_stats(btcusd)
+
+plt.figure()
+grafico_retornos_diarios(btcusd_new_dataframe['returns']*100)
+
+returns_percent = btcusd_new_dataframe['returns']*100
+returns_percent.describe()

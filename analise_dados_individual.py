@@ -119,6 +119,17 @@ retorno_acumulado_btc = (1+btcusd_new_dataframe['returns']).cumprod()
 drawdown_btc, max_drawdown_btc = calculo_drawdown(btcusd_new_dataframe['returns'])
 
 
+fig = plt.figure(figsize=(16,9))
+ax1 = fig.add_subplot(2,2,1)
+ax2 = fig.add_subplot(2,2,3)
+ax1.plot(drawdown_btc['retornos_acumulados'])
+ax2.plot(drawdown_btc['drawdown']*100, color='r')
+ax1.set_ylabel('Retorno acumulado')
+ax1.set_xlabel('Anos')
+ax2.set_ylabel('Drawdown em %')
+ax2.set_xlabel('Anos')
+
+
 returns_percent = btcusd_new_dataframe['returns']*100
 returns_percent.describe()
 

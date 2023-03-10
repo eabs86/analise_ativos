@@ -115,6 +115,10 @@ btcusd_new_dataframe = retorno_e_stats(btcusd).dropna(axis=0)
 plt.figure()
 grafico_retornos_diarios(btcusd_new_dataframe['returns']*100,"Retornos diários do BTC/USD")
 
+retorno_acumulado_btc = (1+btcusd_new_dataframe['returns']).cumprod()
+drawdown_btc, max_drawdown_btc = calculo_drawdown(btcusd_new_dataframe['returns'])
+
+
 returns_percent = btcusd_new_dataframe['returns']*100
 returns_percent.describe()
 
@@ -159,7 +163,7 @@ plt.show()
 retorno_2015_acumulado=(1+dados_btcusd_2015['returns']).cumprod()-1
 retorno_2015_log_acumulado = np.exp(dados_btcusd_2015['returns_log'].values.cumsum()) - 1
 
-dataframe_drawdown_btc2015, max_drawdown_btc2015 = calculo_drawdown(retorno_2015_acumulado)
+dataframe_drawdown_btc2015, max_drawdown_btc2015 = calculo_drawdown(dados_btcusd_2015['returns'])
 
 describe_dados_btcusd_2015 = dados_btcusd_2015.describe()
 

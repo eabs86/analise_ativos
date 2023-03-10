@@ -46,7 +46,8 @@ def grafico_retornos_diarios(dataframe,titulo):
     return ax
     
 
-def calculo_drawdown(retornos_acumulados):
+def calculo_drawdown(retornos):
+    retornos_acumulados = (1+retornos).cumprod()
     picos = retornos_acumulados.cummax()
     drawdown = (retornos_acumulados-picos)/picos
     max_drawdown = drawdown.min()*-100

@@ -82,6 +82,9 @@ df = pd.concat([btc_close,eth_close],keys=['returns_btc','returns_eth'], axis=1)
 
 correl = df.corr()
 
+sns.heatmap(correl, cmap="YlGnBu")
+
+
 """ 
 3º Etapa: usando a série mais jovem como referência, que é a série da prata
 
@@ -101,8 +104,8 @@ ouro = ouro.iloc[len(ouro) - tamanho_serie_jovem:,:].reset_index(drop=True)
 
 """
 
-btcusd = btcusd.loc[btcusd['date'].isin(sp500['date'])]
-ethusd = ethusd.loc[ethusd['date'].isin(sp500['date'])]
+# btcusd = btcusd.loc[btcusd['date'].isin(sp500['date'])]
+# ethusd = ethusd.loc[ethusd['date'].isin(sp500['date'])]
 ibovespa = ibovespa.loc[ibovespa['date'].isin(sp500['date'])]
 nasdaq = nasdaq.loc[nasdaq['date'].isin(sp500['date'])]
 dxy = dxy.loc[dxy['date'].isin(sp500['date'])]

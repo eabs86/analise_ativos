@@ -83,8 +83,6 @@ nasdaq['date'] = pd.to_datetime(nasdaq['date'], format='%d/%m/%Y')
 ouro['date'] = [datetime.strptime(elemento, "%d.%m.%Y") for elemento in ouro['date']]
 ouro['date'] = pd.to_datetime(ouro['date'], format='%d/%m/%Y')
 
-# prata['date'] = [datetime.strptime(elemento, "%d.%m.%Y") for elemento in prata['date']]
-# prata['date'] = pd.to_datetime(prata['date'], format='%d/%m/%Y')
 
 usdbrl['date'] = [datetime.strptime(elemento, "%d.%m.%Y") for elemento in usdbrl['date']]
 usdbrl['date'] = pd.to_datetime(usdbrl['date'], format='%d/%m/%Y')

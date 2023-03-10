@@ -3,6 +3,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def object_to_float(dataframe_object):
+    '''
+    
+    Parameters
+    ----------
+    dataframe_object : dataframe
+        É um dataframe que deve conter uma coluna nomeada de 'date'.
+
+    Returns
+    -------
+    dataframe_float.
+
+    '''    
     coluna_datas = dataframe_object['date'].copy()
     dataframe_object.drop('date',axis="columns",inplace=True)
     dataframe_object = dataframe_object.stack().str.replace('.','').unstack()

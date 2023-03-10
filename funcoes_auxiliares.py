@@ -21,19 +21,21 @@ def normalizar_serie(serie):
 def retorno_e_stats(dataframe):
     
     dataframe['returns'] = (dataframe['close']/dataframe['close'].shift(1))-1
+    dataframe['returns_log'] = np.log((dataframe['close']/dataframe['close'].shift(1)))
+    
     dataframe['open_to_close_amplitude'] = np.abs(dataframe['open'] - dataframe['close'])
     dataframe['min_to_max_amplitude'] = np.abs(dataframe['min'] - dataframe['max'])
-    new_dataframe = dataframe
+    new_dataframe = dataframe.dropna(axis=0)
     
     return new_dataframe
 
-def grafico_retornos_diarios(dataframe):
+def grafico_retornos_diarios(dataframe,titulo):
 
     ax = dataframe.plot(label ='Retornos', alpha=0.6,
-                                                    title='Retornos diários do BTC/USD em %')
+                                                    title=titulo)
 
-    ax.set_ylabel('Retorno diários percentual %')
-    ax.set_xlabel('Tempo')
+    ax.set_ylabel('Retorno diários em percentual %')
+    ax.set_xlabel('Tempo em Anos')
     ax.axhline(dataframe.mean(), label='Média', color='k',linestyle='--')
     ax.axhline(dataframe.std()*2, label='2 desvios', color='orange',linestyle='--')
     ax.axhline(dataframe.std()*-2, color='orange',linestyle='--')
@@ -43,3 +45,14 @@ def grafico_retornos_diarios(dataframe):
     
     return ax
     
+
+def calculo_drawdown(retornos_acumulados):
+    picos = retornos_acumulados.cummax()
+    drawdown = (retornos_acumulados-picos)/picos
+    max_drawdown = drawdown.min()*-100
+    dataframe_saida = pd.DataFrame()
+    dataframe_saida['retornos_acumulados'] = retornos_acumulados
+    dataframe_saida['picos'] = picos
+    dataframe_saida['drawdown'] = drawdown
+    
+    return dataframe_saida, max_drawdown

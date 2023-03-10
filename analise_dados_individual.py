@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
+
 """
 Created on Thu Mar  9 09:23:11 2023
 
 @author: Emmanuel Andrade
 """
-
+from datetime import datetime
 import pandas as pd #carregando a biblioteca
 import numpy as np
-from datetime import datetime
-
-from funcoes_auxiliares import object_to_float, normalizar_serie, retorno_e_stats, grafico_retornos_diarios
-
 import matplotlib.pyplot as plt
+from funcoes_auxiliares import object_to_float, normalizar_serie
+from funcoes_auxiliares import retorno_e_stats, grafico_retornos_diarios,calculo_drawdown
 
 
 
@@ -52,11 +50,6 @@ ouro.rename(columns={'Data':'date',
                      'Último':'close',
                      'Abertura':'open','Máxima':'max','Mínima':'min'}, inplace=True)
 
-#Série da prata desconsiderada. Com problemas na base de dados obtida pelo investing
-# prata = pd.read_csv("dataset/_PRATAUSD.csv",sep=',',decimal=',').drop(['Vol.','Var%'],axis=1)
-# prata.rename(columns={'Data':'date',
-#                       'Último':'close',
-#                       'Abertura':'open','Máxima':'max','Mínima':'min'}, inplace=True)
 
 sp500 = pd.read_csv("dataset/_SP500.csv",sep=',',decimal=',').drop(['Vol.','Var%'],axis=1)
 sp500.rename(columns={'Data':'date',
@@ -114,63 +107,69 @@ dxy.set_index('date',inplace=True)
 # usdbrl = object_to_float(usdbrl) já está float na base de dados
 usdbrl.set_index('date',inplace=True)
 ouro = object_to_float(ouro)
-# prata = object_to_float(prata) já está float na base de dados
-# prata.set_index('date',inplace=True)
 
 
-assets_close = pd.concat(
-    [ethusd['close'],
-    btcusd['close'],
-    sp500['close'],
-    nasdaq['close'],
-    ibovespa['close'],
-    dxy['close'],
-    usdbrl['close'],
-    ouro['close']],
-    axis=1,
-    keys=['ethusd','btcusd','sp500','nasdaq','ibovespa','dxy','usdbrl','ouro']
-)
 
-assets_close.plot()
-plt.show()
-
-# normalização das séries
-
-ethusd_norm_close = normalizar_serie(ethusd['close'])
-btcusd_norm_close = normalizar_serie(btcusd['close'])
-ibovespa_norm_close = normalizar_serie(ibovespa['close'])
-sp500_norm_close = normalizar_serie(sp500['close'])
-nasdaq_norm_close = normalizar_serie(nasdaq['close'])
-dxy_norm_close = normalizar_serie(dxy['close'])
-usdbrl_norm_close = normalizar_serie(usdbrl['close'])
-# prata_norm_close = normalizar_serie(prata['close'])
-ouro_norm_close = normalizar_serie(ouro['close'])
-
-assets_close_norm = pd.concat(
-    [ethusd_norm_close,
-    btcusd_norm_close,
-    sp500_norm_close,
-    nasdaq_norm_close,
-    ibovespa_norm_close,
-    dxy_norm_close,
-    usdbrl_norm_close,
-    ouro_norm_close],
-    axis=1,
-    keys=['ethusd','btcusd','sp500','nasdaq','ibovespa','dxy','usdbrl','ouro']
-)
-
-ax1 = assets_close_norm[['ethusd','btcusd']].plot()
-ax1.set_ylabel('Retorno Percentual %')
-ax1.set_xlabel('Tempo')
-
-ax2 = assets_close_norm[['nasdaq','ibovespa','dxy','usdbrl','ouro']].plot()
-ax2.set_ylabel('Retorno Percentual %')
-ax2.set_xlabel('Tempo')
-
-btcusd_new_dataframe = retorno_e_stats(btcusd)
+btcusd_new_dataframe = retorno_e_stats(btcusd).dropna(axis=0)
 
 plt.figure()
-grafico_retornos_diarios(btcusd_new_dataframe['returns']*100)
+grafico_retornos_diarios(btcusd_new_dataframe['returns']*100,"Retornos diários do BTC/USD")
 
 returns_percent = btcusd_new_dataframe['returns']*100
 returns_percent.describe()
+
+dados_btcusd_2015 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2015].reset_index(drop=True)
+dados_btcusd_2016 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2016].reset_index(drop=True)
+dados_btcusd_2017 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2017].reset_index(drop=True)
+dados_btcusd_2018 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2018].reset_index(drop=True)
+dados_btcusd_2019 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2019].reset_index(drop=True)
+dados_btcusd_2020 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2020].reset_index(drop=True)
+dados_btcusd_2021 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2021].reset_index(drop=True)
+dados_btcusd_2022 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2022].reset_index(drop=True)
+dados_btcusd_2023 = btcusd_new_dataframe.loc[btcusd_new_dataframe.index.year == 2023].reset_index(drop=True)
+
+fechamento_por_ano = pd.concat(
+    [dados_btcusd_2015['close'],
+    dados_btcusd_2016['close'],
+    dados_btcusd_2017['close'],
+    dados_btcusd_2018['close'],
+    dados_btcusd_2019['close'],
+    dados_btcusd_2020['close'],
+    dados_btcusd_2021['close'],
+    dados_btcusd_2022['close'],
+    dados_btcusd_2023['close']],
+    keys=['btcusd_2015',
+        'btcusd_2016',
+        'btcusd_2017',
+        'btcusd_2018',
+        'btcusd_2019',
+        'btcusd_2020',
+        'btcusd_2021',
+        'btcusd_2022',
+        'btcusd_2023',],axis=1
+)
+plt.figure()
+
+#plot dos gráficos ano por ano num único gráfico
+ax3 = (normalizar_serie(fechamento_por_ano)).plot(title="Comportamento do BTC/USD em cada ano")
+ax3.set_ylabel('Retorno Percentual %')
+ax3.set_xlabel('Tempo (em dias)')
+plt.show()
+
+retorno_2015_acumulado=(1+dados_btcusd_2015['returns']).cumprod()-1
+retorno_2015_log_acumulado = np.exp(dados_btcusd_2015['returns_log'].values.cumsum()) - 1
+
+dataframe_drawdown_btc2015, max_drawdown_btc2015 = calculo_drawdown(retorno_2015_acumulado)
+
+describe_dados_btcusd_2015 = dados_btcusd_2015.describe()
+
+retorno_medio_anual_btcusd2015 = describe_dados_btcusd_2015.iloc[1,4]*365
+variancia_media__anual_btcusd2015 = dados_btcusd_2015['returns'].var()*365
+desviopadrao_medio_anual_btcusd2015 = describe_dados_btcusd_2015.iloc[2,4]*(365**0.5)
+open_to_close_media_btcusd2015 =  describe_dados_btcusd_2015.iloc[2,6]
+min_to_max_media_btcusd2015 =  describe_dados_btcusd_2015.iloc[2,7]
+
+#correlação entre ativos
+
+
+

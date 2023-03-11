@@ -10,7 +10,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from funcoes_auxiliares import object_to_float, normalizar_serie
 from funcoes_auxiliares import retorno_e_stats, grafico_retornos_diarios,calculo_drawdown
-from funcoes_auxiliares import grafico_retorno_drawdown, grafico_retorno_drawdown_multiplos
 
 
 
@@ -92,7 +91,7 @@ sp500['date'] = [datetime.strptime(elemento, "%d.%m.%Y") for elemento in sp500['
 sp500['date'] = pd.to_datetime(sp500['date'], format='%d/%m/%Y')
 
 """ 
-3º Etapa: Análise individual de cada série
+3º Etapa: Conversão dos dados para float.
 
 """
 
@@ -107,14 +106,19 @@ dxy.set_index('date',inplace=True)
 usdbrl.set_index('date',inplace=True)
 ouro = object_to_float(ouro)
 
+""" 
+4º Etapa: Inicio da análise dedados.
+- Criação de um novo dataframe com algumas métricas como retorno simples, retorno log normal e outras.
+Para saber mais, consultar funcoes_auxiliares.py
+
+"""
+
+btcusd_new_dataframe = retornos_e_stats(btcusd)
 
 
-btcusd_new_dataframe = retorno_e_stats(btcusd).dropna(axis=0)
-
-plt.figure()
 grafico_retornos_diarios(btcusd_new_dataframe['returns']*100,"Retornos diários do BTC/USD")
 
-retorno_acumulado_btc = (1+btcusd_new_dataframe['returns']).cumprod()
+
 drawdown_btc, max_drawdown_btc = calculo_drawdown(btcusd_new_dataframe['returns'])
 
 

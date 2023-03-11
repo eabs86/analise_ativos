@@ -30,13 +30,15 @@ def normalizar_serie(serie):
     
     return serie_normalizada
 
-def retorno_e_stats(dataframe):
+def retornos_e_stats(dataframe):
     
     dataframe['returns'] = (dataframe['close']/dataframe['close'].shift(1))-1
+    dataframe['cumulative_simple_return'] = (1+dataframe['returns']).cumprod()-1
     dataframe['returns_log'] = np.log((dataframe['close']/dataframe['close'].shift(1)))
-    
+    dataframe['cumulative_log_return']=np.exp(dataframe['returns_log'].cumsum()) - 1
     dataframe['open_to_close_amplitude'] = np.abs(dataframe['open'] - dataframe['close'])
     dataframe['min_to_max_amplitude'] = np.abs(dataframe['min'] - dataframe['max'])
+    dataframe['otc_mintmax_ratio'] = dataframe['open_to_close_amplitude'] /  dataframe['min_to_max_amplitude']
     new_dataframe = dataframe.dropna(axis=0)
     
     return new_dataframe
@@ -49,10 +51,10 @@ def grafico_retornos_diarios(dataframe,titulo):
     ax.set_ylabel('Retorno diários em percentual %')
     ax.set_xlabel('Tempo em Anos')
     ax.axhline(dataframe.mean(), label='Média', color='k',linestyle='--')
-    ax.axhline(dataframe.std()*2, label='2 desvios', color='orange',linestyle='--')
-    ax.axhline(dataframe.std()*-2, color='orange',linestyle='--')
-    ax.axhline(dataframe.std()*3, label='3 desvios', color='red',linestyle='--')
-    ax.axhline(dataframe.std()*-3, color='red',linestyle='--')
+    ax.axhline(dataframe.std()*2 + dataframe.mean() , label='2 desvios', color='orange',linestyle='--')
+    ax.axhline(dataframe.std()*-2 + dataframe.mean(), color='orange',linestyle='--')
+    ax.axhline(dataframe.std()*3 + dataframe.mean(), label='3 desvios', color='red',linestyle='--')
+    ax.axhline(dataframe.std()*-3 + dataframe.mean(), color='red',linestyle='--')
     ax.legend(loc='best')
     
     return ax

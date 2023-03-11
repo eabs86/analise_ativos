@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from funcoes_auxiliares import object_to_float, normalizar_serie
 from funcoes_auxiliares import retorno_e_stats, grafico_retornos_diarios,calculo_drawdown
+from funcoes_auxiliares import grafico_retorno_drawdown, grafico_retorno_drawdown_multiplos
 
 
 
@@ -117,15 +118,26 @@ retorno_acumulado_btc = (1+btcusd_new_dataframe['returns']).cumprod()
 drawdown_btc, max_drawdown_btc = calculo_drawdown(btcusd_new_dataframe['returns'])
 
 
-fig = plt.figure(figsize=(16,9))
-ax1 = fig.add_subplot(2,2,1)
-ax2 = fig.add_subplot(2,2,3)
-ax1.plot(drawdown_btc['retornos_acumulados'])
-ax2.plot(drawdown_btc['drawdown']*100, color='r')
-ax1.set_ylabel('Retorno acumulado')
-ax1.set_xlabel('Anos')
-ax2.set_ylabel('Drawdown em %')
-ax2.set_xlabel('Anos')
+grafico_retorno_drawdown(drawdown_btc, 'Retorno Acumulado do BTC/USD x Drawdown no período')
+
+sp500_new_dataframe = retorno_e_stats(sp500).dropna(axis=0)
+drawdown_sp500, max_drawdown_sp500=calculo_drawdown(sp500_new_dataframe['returns'])
+grafico_retorno_drawdown(drawdown_sp500,'')
+
+
+ibovespa_new_dataframe = retorno_e_stats(ibovespa).dropna(axis=0)
+drawdown_ibovespa, max_drawdown_ibovespa=calculo_drawdown(ibovespa_new_dataframe['returns'])
+grafico_retorno_drawdown(drawdown_ibovespa,'Retorno do Ibovespa x Drawdown no período')
+
+ouro_new_dataframe = retorno_e_stats(ouro).dropna(axis=0)
+drawdown_ouro, max_drawdown_ouro=calculo_drawdown(ouro_new_dataframe['returns'])
+grafico_retorno_drawdown(drawdown_ouro,'Retorno do ouro x Drawdown no período')
+
+usdbrl_new_dataframe = retorno_e_stats(usdbrl).dropna(axis=0)
+drawdown_usdbrl, max_drawdown_usdbrl=calculo_drawdown(usdbrl_new_dataframe['returns'])
+grafico_retorno_drawdown(drawdown_usdbrl,'Retorno do usdbrl x Drawdown no período')
+
+grafico_retorno_drawdown_multiplos([drawdown_ibovespa,drawdown_sp500,drawdown_ouro,drawdown_usdbrl])
 
 
 returns_percent = btcusd_new_dataframe['returns']*100

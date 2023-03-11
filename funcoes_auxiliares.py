@@ -69,3 +69,34 @@ def calculo_drawdown(retornos):
     dataframe_saida['drawdown'] = drawdown
     
     return dataframe_saida, max_drawdown
+
+def grafico_retorno_drawdown(dataframe,titulo):
+    
+    fig = plt.figure(figsize=(16,9))
+    fig.suptitle(titulo,fontsize=16)
+    ax1 = fig.add_subplot(2,1,1)
+    ax2 = fig.add_subplot(2,1,2)
+    ax1.plot(dataframe['retornos_acumulados'])
+    ax2.plot(dataframe['drawdown']*100, color='r')
+    ax1.set_ylabel('Retorno acumulado',fontsize=16)
+    ax1.set_xlabel('Anos',fontsize=16)
+    ax2.set_ylabel('Drawdown em %',fontsize=16)
+    ax2.set_xlabel('Anos',fontsize=16)
+    
+def grafico_retorno_drawdown_multiplos(lista_dataframes):
+    
+    fig = plt.figure(figsize=(16,9))
+    ax1 = fig.add_subplot(2,1,1)
+    ax2 = fig.add_subplot(2,1,2)
+    for dataframe in lista_dataframes:
+    
+        # fig.suptitle(titulo,fontsize=16)
+
+        ax1.plot(dataframe['retornos_acumulados'])
+        ax2.plot(dataframe['drawdown']*100)
+        ax1.set_ylabel('Retorno acumulado',fontsize=16)
+        ax1.set_xlabel('Anos',fontsize=16)
+        ax2.set_ylabel('Drawdown em %',fontsize=16)
+        ax2.set_xlabel('Anos',fontsize=16)
+    
+

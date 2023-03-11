@@ -142,7 +142,7 @@ usdbrl_new_dataframe = retornos_e_stats(usdbrl).dropna(axis=0)
 drawdown_usdbrl, max_drawdown_usdbrl=calculo_drawdown(usdbrl_new_dataframe['returns'])
 grafico_retorno_drawdown(drawdown_usdbrl,'Retorno do usdbrl x Drawdown no período')
 
-grafico_retorno_drawdown_multiplos([drawdown_ibovespa,drawdown_sp500,drawdown_ouro,drawdown_usdbrl])
+grafico_retorno_drawdown_multiplos([drawdown_ibovespa,drawdown_sp500,drawdown_ouro,drawdown_usdbrl],['Ibovespa', 'SP500','Ouro','USDBRL'])
 
 
 returns_percent = btcusd_new_dataframe['returns']*100
